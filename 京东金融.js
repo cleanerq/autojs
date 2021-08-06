@@ -48,6 +48,7 @@ function start(options) {
     });
 
     if (files.exists("Secure.js")) {
+        console.log("存在secure.js");
         var Secure = require("Secure.js");
         var secure = new Secure(robot, options.max_retry_times);
         secure.openLock(options.password, options.pattern_size);
@@ -93,6 +94,7 @@ function JDFinancial(robot, options) {
     };
 
     this.launch = function () {
+        console.log("do launch");
         var times = 0;
         do {
             if (this.doLaunch()) {
@@ -110,16 +112,18 @@ function JDFinancial(robot, options) {
     };
 
     this.doLaunch = function () {
-        sleep(1000);
+        sleep(3000);
         var jump = text("跳过");
         if (jump.exists()) {
+            console.log("找到 跳过");
             jump.findOnce().click();
         }
 
-        var me;
-        if (me = id("tv_fourth_icon").text("我").findOne(this.options.timeout)) {
-            return me.parent().click();
+        let meObj = id("fifthLayout");
+        if (meObj) {
+            return meObj.findOne(this.options.timeout).click();
         } else {
+            console.log("没找到 我的控件");
             return false;
         }
     };
