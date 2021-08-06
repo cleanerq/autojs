@@ -54,7 +54,7 @@ function start(options) {
         secure.openLock(options.password, options.pattern_size);
     }
 
-    jdFinancial.launch();
+    // jdFinancial.launch();
     jdFinancial.work();
 
     exit();
@@ -112,23 +112,32 @@ function JDFinancial(robot, options) {
     };
 
     this.doLaunch = function () {
-        sleep(3000);
+        sleep(4000);
         var jump = text("跳过");
         if (jump.exists()) {
             console.log("找到 跳过");
             jump.findOnce().click();
         }
 
-        let meObj = id("fifthLayout");
-        if (meObj) {
-            return meObj.findOne(this.options.timeout).click();
-        } else {
-            console.log("没找到 我的控件");
-            return false;
-        }
+        // let meObj = id("fifthLayout");
+        // if (meObj) {
+        //     return meObj.findOne(this.options.timeout).click();
+        // } else {
+        //     console.log("没找到 我的控件");
+        //     return false;
+        // }
+
+        // var me;
+        // if (me = id("tv_fourth_icon").text("我").findOne(this.options.timeout)) {
+        //     return me.parent().click();
+        // } else {
+        //     return false;
+        // }
+
     };
 
     this.work = function () {
+        sleep(3000);
         var success = false;
         for (var times = 0;times < this.options.max_retry_times;times++) {
             if (this.signIn()) {
@@ -146,22 +155,39 @@ function JDFinancial(robot, options) {
     };
 
     this.signIn = function() {
+
+        // var me = id("home_header_grid_icon").findOne(this.options.timeout);
+        // if (me.parent()) {
+        //     console.log("找到签到");
+        //     me.parent().click();
+        // }
+
         if (id("tv_item_label").textMatches(/已签\d+天/).exists()) return true;
 
         var sign_in = text("签到");
+        if (sign_in.exists()) {
+            console.log("找到签到");
+        }
         if (!sign_in.exists()) return false;
 
-        if (!sign_in.findOnce().parent().click()) return false;
+        if (!sign_in.findOnce().parent().parent().click()) return false;
 
         sleep(3000);
 
+
+        //         className("android.view.View").text("签到领钢镚").findOne().parent().click();
         var btn;
         var success;
-        if (btn = desc("签到领钢镚").findOne(this.options.timeout)) {
-            success = btn.click();
+        if (btn = className("android.view.View").text("签到领钢镚").findOne(this.options.timeout)) {
+            success = btn.parent().click();
         } else {
             success = false;
         }
+        sleep(1000);
+        className("android.view.View").text("立即获得").findOne().click();
+
+
+
 
         this.robot.back();
         sleep(1500);
